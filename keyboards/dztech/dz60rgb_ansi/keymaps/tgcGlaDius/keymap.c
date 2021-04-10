@@ -29,8 +29,9 @@ LEADER_EXTERNS();
 
 void matrix_scan_user(void){
     LEADER_DICTIONARY() {
-        leading = false;
-        leader_end();
+
+
+        //TODO: see process_leader.h for tips to implement leader key RGB indicator
 
         SEQ_ONE_KEY(KC_C){
             register_code(KC_LCTL);
@@ -65,6 +66,12 @@ void matrix_scan_user(void){
         SEQ_TWO_KEYS(KC_E, KC_V){
             register_code(KC_LALT);
             tap_code(KC_F8);
+            unregister_code(KC_LALT);
+        }
+
+        SEQ_ONE_KEY(KC_G){
+            register_code(KC_LALT);
+            tap_code(KC_INS);
             unregister_code(KC_LALT);
         }
 
