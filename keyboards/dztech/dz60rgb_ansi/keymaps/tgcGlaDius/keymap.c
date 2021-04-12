@@ -27,12 +27,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     )
 };
 
-#define SEQ_ONE_KEY_HIGHLIGHT(key) if(leading){\
-    if(leader_sequence_size == 0){\
-        activateCode(key);\
-    } \
-} //create a define for leader key highlighting
-
+LEADER_HIGHLIGHT_STORE();
 
 LEADER_EXTERNS();
 
@@ -48,9 +43,12 @@ void rgb_matrix_indicators_user(void){
 
 void matrix_scan_user(void){
     if(leading){
+        LEADER_CHECK_SEQ_LAYER();
+
         SEQ_ONE_KEY_HIGHLIGHT(KC_C);
         SEQ_ONE_KEY_HIGHLIGHT(KC_R);
         SEQ_ONE_KEY_HIGHLIGHT(KC_GESC);
+        SEQ_TWO_KEYS_HIGHLIGHT(KC_GESC, KC_L);
     }
 
     LEADER_DICTIONARY() {

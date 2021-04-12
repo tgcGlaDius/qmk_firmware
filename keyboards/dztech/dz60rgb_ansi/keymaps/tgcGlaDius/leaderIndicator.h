@@ -9,6 +9,20 @@
 #define ROW_SIZE (MATRIX_COLS*CODESIZE)
 #define LAYER_SIZE (MATRIX_COLS*ROW_SIZE)
 
+#define LEADER_HIGHLIGHT_STORE() uint8_t DisplayingLeaderLayer = 0;
+
+#define LEADER_CHECK_SEQ_LAYER() if(leader_sequence_size != DisplayingLeaderLayer){DisplayingLeaderLayer = leader_sequence_size; clearLeaderIndicator();}
+
+#define SEQ_ONE_KEY_HIGHLIGHT(key) if(leading){\
+    if(leader_sequence_size == 0){\
+        activateCode(key);\
+    } \
+} //create a define for leader key highlighting
+
+#define SEQ_TWO_KEYS_HIGHLIGHT(key1, key2)\
+    if(leader_sequence_size == 0){ activateCode(key1);}\
+    else if(leader_sequence_size == 1 && leader_sequence[0] == key1){activateCode(key2);}
+
 uint16_t readCodeAt(uint8_t layer, uint8_t row, uint8_t column){
     return pgm_read_word(&(keymaps[layer][row][column]));
 }
