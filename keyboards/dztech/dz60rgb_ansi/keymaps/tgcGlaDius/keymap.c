@@ -1,4 +1,5 @@
 #include QMK_KEYBOARD_H
+#include "print.h"
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -21,19 +22,83 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, RGB_TOG, RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD, RGB_MOD, _______, _______, _______, RESET,
         _______, RGB_M_P, _______, _______, _______, _______, _______, _______, RGB_SPI, RGB_SPD, _______, _______,          _______,
         _______,          _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
-        _______, _______, _______,                            _______,                            _______, _______, _______, _______
+        DEBUG  , _______, _______,                            _______,                            _______, _______, _______, _______
     )
 };
 
+#define INDIC_ROWS MATRIX_ROWS
+#define INDIC_COLLS MATRIX_COLS
+bool indic[INDIC_ROWS][INDIC_COLLS] = {{false,},};
+
+#define CODESIZE sizeof(uint16_t)
+#define ROW_SIZE (MATRIX_COLS*CODESIZE)
+#define LAYER_SIZE (MATRIX_COLS*ROW_SIZE)
+
+uint16_t readCodeAt(uint8_t layer, uint8_t row, uint8_t column){
+    return pgm_read_word(&(keymaps[layer][row][column]));
+    // return pgm_read_word( ((keymaps+(layer*LAYER_SIZE))+(row*ROW_SIZE))+(column+CODESIZE) );
+}
+
+void activateCode(uint16_t code){
+    for(int r = 0; r<INDIC_ROWS; r++){
+        for(int c = 0; c<INDIC_COLLS; c++){
+            // uprintf("[0][%u][%u] = %u\n", r, c, readCodeAt(0,r,c));
+            if(readCodeAt(0,r,c) == code){
+                uprintf("indicating row: %u col: %u\n", r, c);
+                indic[r][c] = true;
+            }
+        }
+    }
+}
+
+void clearLeaderIndicator(void){
+    for(int r = 0; r<INDIC_ROWS; r++){
+        for(int c = 0; c<INDIC_COLLS; c++){
+            indic[r][c] = false;
+        }
+    }
+}
+
+#define SEQ_ONE_KEY_HIGHLIGHT(key) if(leading){\
+    if(leader_sequence_size == 0){\
+        activateCode(key);\
+    } \
+} //create a define for leader key highlighting
+
+
 LEADER_EXTERNS();
 
-void matrix_scan_user(void){
-    LEADER_DICTIONARY() {
+bool indicating = false;
 
+void leader_start(void){
+    clearLeaderIndicator();
+}
+
+void rgb_matrix_indicators_user(void){
+    if(leading){
+        for(int r = 0; r<INDIC_ROWS; r++){
+            for(int c = 0; c<INDIC_COLLS; c++){
+                if(indic[r][c]){
+                    rgb_matrix_set_color((r*INDIC_COLLS)+c,255,255,255);
+                }
+            }
+        }
+    }
+}
+
+void matrix_scan_user(void){
+    SEQ_ONE_KEY_HIGHLIGHT(KC_C);
+    SEQ_ONE_KEY_HIGHLIGHT(KC_R);
+    SEQ_ONE_KEY_HIGHLIGHT(KC_GESC);
+
+    LEADER_DICTIONARY() {
+        leading = false;
+        leader_end();
 
         //TODO: see process_leader.h for tips to implement leader key RGB indicator
 
         SEQ_ONE_KEY(KC_C){
+            // uprintf("leader_sequence_size: %u\n", leader_sequence_size);
             register_code(KC_LCTL);
             tap_code(KC_F9);
             unregister_code(KC_LCTL);
@@ -52,6 +117,7 @@ void matrix_scan_user(void){
         }
 
         SEQ_TWO_KEYS(KC_S, KC_S){
+            // uprintf("leader_sequence_size: %u\n", leader_sequence_size);
             register_code(KC_LCTL);
             tap_code(KC_F2);
             unregister_code(KC_LCTL);

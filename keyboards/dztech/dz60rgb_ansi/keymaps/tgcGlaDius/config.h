@@ -67,6 +67,3 @@
 #    define DRIVER_LED_TOTAL DRIVER_1_LED_TOTAL
 #endif
 
-#define NO_ACTION_MACRO
-#define NO_ACTION_FUNCTION
-
