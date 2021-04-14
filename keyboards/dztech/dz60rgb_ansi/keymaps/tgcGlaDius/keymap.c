@@ -47,16 +47,33 @@ void matrix_scan_user(void){
 
         SEQ_ONE_KEY_HIGHLIGHT(KC_C);
         SEQ_ONE_KEY_HIGHLIGHT(KC_R);
-        SEQ_ONE_KEY_HIGHLIGHT(KC_GESC);
-        SEQ_TWO_KEYS_HIGHLIGHT(KC_GESC, KC_L);
+        SEQ_ONE_KEY_HIGHLIGHT(KC_D);
+        SEQ_TWO_KEYS_HIGHLIGHT(KC_S,KC_S);
+        SEQ_ONE_KEY_HIGHLIGHT(KC_B);
+        SEQ_TWO_KEYS_HIGHLIGHT(KC_E, KC_V);
+        SEQ_ONE_KEY_HIGHLIGHT(KC_G);
+
+        SEQ_TWO_KEYS_HIGHLIGHT(KC_G, KC_F);
+        SEQ_TWO_KEYS_HIGHLIGHT(KC_G, KC_D);
     }
 
     LEADER_DICTIONARY() {
         leading = false;
         leader_end();
 
+        SEQ_TWO_KEYS(KC_G, KC_F){
+            SEND_STRING("HAHA, FILIP GAY\n");
+        }
+
+        SEQ_TWO_KEYS(KC_G, KC_D){
+            SEND_STRING("HAHA, DENNIS GAY\n");
+        }
+
+        SEQ_TWO_KEYS(KC_G, KC_F){
+
+        }
+
         SEQ_ONE_KEY(KC_C){
-            // uprintf("leader_sequence_size: %u\n", leader_sequence_size);
             register_code(KC_LCTL);
             tap_code(KC_F9);
             unregister_code(KC_LCTL);
@@ -75,7 +92,6 @@ void matrix_scan_user(void){
         }
 
         SEQ_TWO_KEYS(KC_S, KC_S){
-            // uprintf("leader_sequence_size: %u\n", leader_sequence_size);
             register_code(KC_LCTL);
             tap_code(KC_F2);
             unregister_code(KC_LCTL);
