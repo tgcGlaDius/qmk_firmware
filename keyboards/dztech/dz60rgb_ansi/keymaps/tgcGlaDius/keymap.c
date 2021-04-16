@@ -1,6 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "leaderIndicator.h"
-#include "print.h"
+//#include "print.h"
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -53,65 +53,59 @@ void matrix_scan_user(void){
         SEQ_TWO_KEYS_HIGHLIGHT(KC_E, KC_V);
         SEQ_ONE_KEY_HIGHLIGHT(KC_G);
 
-        SEQ_TWO_KEYS_HIGHLIGHT(KC_G, KC_F);
-        SEQ_TWO_KEYS_HIGHLIGHT(KC_G, KC_D);
     }
 
     LEADER_DICTIONARY() {
         leading = false;
         leader_end();
 
-        SEQ_TWO_KEYS(KC_G, KC_F){
-            SEND_STRING("HAHA, FILIP GAY\n");
-        }
-
-        SEQ_TWO_KEYS(KC_G, KC_D){
-            SEND_STRING("HAHA, DENNIS GAY\n");
-        }
-
-        SEQ_TWO_KEYS(KC_G, KC_F){
-
-        }
-
-        SEQ_ONE_KEY(KC_C){
+        SEQ_ONE_KEY(KC_C){ // clion compile
             register_code(KC_LCTL);
             tap_code(KC_F9);
             unregister_code(KC_LCTL);
         }
 
-        SEQ_ONE_KEY(KC_R){
+        SEQ_ONE_KEY(KC_R){ // clion run
             register_code(KC_LSFT);
             tap_code(KC_F10);
             unregister_code(KC_LSFT);
         }
 
-        SEQ_ONE_KEY(KC_D){
+        SEQ_ONE_KEY(KC_D){ // clion debug
             register_code(KC_LSFT);
             tap_code(KC_F9);
             unregister_code(KC_LSFT);
         }
 
-        SEQ_TWO_KEYS(KC_S, KC_S){
+        SEQ_TWO_KEYS(KC_S, KC_S){ // clion stop running instance
             register_code(KC_LCTL);
             tap_code(KC_F2);
             unregister_code(KC_LCTL);
         }
 
-        SEQ_ONE_KEY(KC_B){
+        SEQ_ONE_KEY(KC_B){ // clion breakpoint
             register_code(KC_LCTL);
             tap_code(KC_F8);
             unregister_code(KC_LCTL);
         }
 
-        SEQ_TWO_KEYS(KC_E, KC_V){
+        SEQ_TWO_KEYS(KC_E, KC_V){ // clion debugger evaluate
             register_code(KC_LALT);
             tap_code(KC_F8);
             unregister_code(KC_LALT);
         }
 
-        SEQ_ONE_KEY(KC_G){
+        SEQ_ONE_KEY(KC_G){ // clion generate
             register_code(KC_LALT);
             tap_code(KC_INS);
+            unregister_code(KC_LALT);
+        }
+
+        SEQ_ONE_KEY(KC_M){ // clion column select mode
+            register_code(KC_LALT);
+            register_code(KC_LSFT);
+            tap_code(KC_INS);
+            unregister_code(KC_LSFT);
             unregister_code(KC_LALT);
         }
 
