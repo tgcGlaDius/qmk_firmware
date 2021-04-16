@@ -1,6 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "leaderIndicator.h"
-//#include "print.h"
+#include "print.h"
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -52,6 +52,7 @@ void matrix_scan_user(void){
         SEQ_ONE_KEY_HIGHLIGHT(KC_B);
         SEQ_TWO_KEYS_HIGHLIGHT(KC_E, KC_V);
         SEQ_ONE_KEY_HIGHLIGHT(KC_G);
+        SEQ_ONE_KEY_HIGHLIGHT(KC_M);
 
     }
 
