@@ -5,6 +5,7 @@
 *.eep
 *.elf
 *.hex
+*.uf2
 *.qmk
 !util/bootloader.hex
 !quantum/tools/eeprom_reset.hex
@@ -72,6 +73,7 @@ id_rsa_*
 
 # python things
 __pycache__
+.python-version
 
 # prerequisites for updating ChibiOS
 /util/fmpp*
