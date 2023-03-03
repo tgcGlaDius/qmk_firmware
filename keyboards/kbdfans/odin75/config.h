@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "config_common.h"
+//#include "config_common.h"
 
 /* OLED SPI Defines */
 #define OLED_DISPLAY_128X64
