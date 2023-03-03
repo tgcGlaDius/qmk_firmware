@@ -1,4 +1,4 @@
-#define ANIM_FRAME_DURATION 75 // how long each frame lasts in ms
+#define ANIM_FRAME_DURATION 100 // how long each frame lasts in ms
 #define ANIM_SIZE 636 // number of bytes in array, minimize for adequate firmware size, max is 1024
 #define IDLE_FRAMES 5
 #define IDLE_TIMEOUT 750 // the amount of time it takes to return to idle
@@ -385,6 +385,8 @@ bool detect_key_down(void)
     }
 
     // fill cache with currently pressed keys
+    // TODO: this code is probably somehow fucked in some way, need to find a way to find out how.
+    // TODO: this should return when any key is pressed down? idk to be
     pressed_keys_index = 0;
     for (uint8_t x = 0; x < MATRIX_ROWS; x++)
     {
@@ -444,7 +446,7 @@ void eval_anim_state(void)
         case Tap:
             if (!key_down) // Tap to Prep
             {
-                anim_state = Prep;
+                anim_state = Prep; // TODO: it seems like this code recovers to the prep path to fast. could be because the CPU is too fast?
                 idle_timeout_timer = timer_read32();
             }
             break;
@@ -486,7 +488,7 @@ static void draw_bongo(bool minimal)
                 oled_write_raw_P(tap_minimal[abs((TAP_FRAMES - 1) - current_tap_frame)], ANIM_SIZE);
             else
                 oled_write_raw_P(tap[abs((TAP_FRAMES - 1) - current_tap_frame)], ANIM_SIZE);
-            current_tap_frame = (current_tap_frame + 1) % TAP_FRAMES;
+            current_tap_frame = (current_tap_frame + 1) % TAP_FRAMES; // TODO: the tap frames also cycle way to fast. could also be a cpu skill
             break;
 
         default:

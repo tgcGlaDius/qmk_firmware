@@ -15,8 +15,8 @@
  */
 
 #include "quantum.h"
-#ifndef test
-//#ifdef OLED_ENABLE
+//#ifndef test
+#ifdef OLED_ENABLE
 
 /// oled rotation
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
@@ -32,9 +32,9 @@ void draw_old_bongo(void) {
     oled_set_cursor(14, 0); // sets cursor to (column, row) using charactar spacing (4 rows on 128x32 screen, anything more will overflow back to the top)
     oled_write_P(PSTR("WPM:"), false);
     oled_write(get_u8_str(get_current_wpm(), '0'), false); // writes wpm on top right corner of string
-    oled_set_cursor(0, 5);
 
     led_t led_usb_state = host_keyboard_led_state();
+    oled_set_cursor(0, 5);
     oled_write_P(led_usb_state.caps_lock ? PSTR("CAPS") : PSTR("    "), false);
     oled_set_cursor(0, 6);
     oled_write_P(led_usb_state.num_lock ? PSTR("NUM") : PSTR("    "), false);
@@ -55,7 +55,7 @@ bool oled_task_kb(void) {
 #endif
 
 #ifdef NEW_BONGO
-    draw_bongo(false);
+    draw_bongo(true);
 #endif
     return true;
 }
