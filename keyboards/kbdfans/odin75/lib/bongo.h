@@ -23,6 +23,10 @@ uint32_t tap_anim_timer = 0;
 uint8_t current_idle_frame = 0;
 uint8_t current_tap_frame = 0;
 
+#if OLED_TIMEOUT > 0
+uint32_t sleep_timer = 0;
+#endif
+
 struct pair_int_int
 {
     uint8_t first;
@@ -475,6 +479,15 @@ static void draw_bongo(bool minimal)
 
     oled_set_cursor(0, 0);
 
+#if OLED_TIMEOUT > 0
+    if(anim_state != Idle) {
+        oled_on();
+        sleep_timer = timer_read32();
+    } else if(timer_elapsed32(sleep_timer) > OLED_TIMEOUT) {
+        oled_off();
+    }
+#endif
+
     switch (anim_state)
     {
         case Idle:
@@ -516,9 +529,8 @@ static void draw_bongo(bool minimal)
     {
         // print wpm
 
-        /* oled_set_cursor(0, 0);
-        sprintf(wpm, "WPM:%03d", get_current_wpm());
-        oled_write(wpm, false); */
+        oled_set_cursor(0, 0);
+        oled_write(get_u8_str(get_current_wpm(), '0'), false);
 
         // calculate && print clock
 
