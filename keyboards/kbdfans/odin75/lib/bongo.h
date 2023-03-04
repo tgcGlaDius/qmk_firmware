@@ -1,9 +1,12 @@
 #define ANIM_FRAME_DURATION 100 // how long each frame lasts in ms
+#define TAP_FRAME_DURATION 66 // how long each frame lasts in ms
 #define ANIM_SIZE 636 // number of bytes in array, minimize for adequate firmware size, max is 1024
 #define IDLE_FRAMES 5
 #define IDLE_TIMEOUT 750 // the amount of time it takes to return to idle
 #define TAP_FRAMES 2
 #define KEYS_SIZE 100 // the number of keys stored in the array that tracks keypresses; how many keys are on the board?
+
+#define KEYPRESS_GRACE 50
 
 #include "quantum.h"
 
@@ -16,6 +19,7 @@ enum anim_states
 uint8_t anim_state = Idle;
 uint32_t idle_timeout_timer = 0;
 uint32_t anim_timer = 0;
+uint32_t tap_anim_timer = 0;
 uint8_t current_idle_frame = 0;
 uint8_t current_tap_frame = 0;
 
@@ -29,6 +33,9 @@ struct pair_int_int pressed_keys_prev[KEYS_SIZE];
 uint8_t pressed_keys_index = 0;
 
 bool key_down = 0;
+bool key_down_past_x = 0;
+uint32_t previous_press_time = 0;
+
 char wpm[42];
 
 static const char PROGMEM idle[IDLE_FRAMES][ANIM_SIZE] =
@@ -385,8 +392,6 @@ bool detect_key_down(void)
     }
 
     // fill cache with currently pressed keys
-    // TODO: this code is probably somehow fucked in some way, need to find a way to find out how.
-    // TODO: this should return when any key is pressed down? idk to be
     pressed_keys_index = 0;
     for (uint8_t x = 0; x < MATRIX_ROWS; x++)
     {
@@ -422,6 +427,13 @@ void eval_anim_state(void)
 {
     key_down = detect_key_down();
 
+    if(key_down) {
+        key_down_past_x = true;
+        previous_press_time = timer_read32();
+    } else if(timer_elapsed32(previous_press_time) >= KEYPRESS_GRACE) {
+        key_down_past_x = false;
+    }
+
     switch (anim_state)
     {
         case Idle:
@@ -445,7 +457,7 @@ void eval_anim_state(void)
 
         case Tap:
             // TODO: only rotate frame if a key was pressed in the last say 50 ms, if not then return to Prep. we should not constatnly change frame but do that on a timer too
-            if (!key_down) // Tap to Prep
+            if (!key_down_past_x) // Tap to Prep
             {
                 anim_state = Prep; // TODO: it seems like this code recovers to the prep path to fast. could be because the CPU is too fast?
                 idle_timeout_timer = timer_read32();
@@ -489,7 +501,10 @@ static void draw_bongo(bool minimal)
                 oled_write_raw_P(tap_minimal[abs((TAP_FRAMES - 1) - current_tap_frame)], ANIM_SIZE);
             else
                 oled_write_raw_P(tap[abs((TAP_FRAMES - 1) - current_tap_frame)], ANIM_SIZE);
-            current_tap_frame = (current_tap_frame + 1) % TAP_FRAMES; // TODO: the tap frames also cycle way to fast. could also be a cpu skill
+            if(timer_elapsed32(tap_anim_timer) > TAP_FRAME_DURATION) {
+                current_tap_frame = (current_tap_frame + 1) % TAP_FRAMES; // TODO: the tap frames also cycle way to fast. could also be a cpu skill
+                tap_anim_timer = timer_read32();
+            }
 
             break;
 

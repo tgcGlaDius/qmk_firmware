@@ -1,3 +1,1 @@
 //#define NEW_BONGO 1
-
-#define OLED_UPDATE_INTERVAL 66
