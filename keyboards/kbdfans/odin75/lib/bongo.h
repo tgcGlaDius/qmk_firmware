@@ -444,6 +444,7 @@ void eval_anim_state(void)
             break;
 
         case Tap:
+            // TODO: only rotate frame if a key was pressed in the last say 50 ms, if not then return to Prep. we should not constatnly change frame but do that on a timer too
             if (!key_down) // Tap to Prep
             {
                 anim_state = Prep; // TODO: it seems like this code recovers to the prep path to fast. could be because the CPU is too fast?
@@ -489,6 +490,7 @@ static void draw_bongo(bool minimal)
             else
                 oled_write_raw_P(tap[abs((TAP_FRAMES - 1) - current_tap_frame)], ANIM_SIZE);
             current_tap_frame = (current_tap_frame + 1) % TAP_FRAMES; // TODO: the tap frames also cycle way to fast. could also be a cpu skill
+
             break;
 
         default:
