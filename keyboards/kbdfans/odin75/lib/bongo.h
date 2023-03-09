@@ -1,4 +1,4 @@
-#define ANIM_FRAME_DURATION 100 // how long each frame lasts in ms
+#define IDLE_FRAME_DURATION 100 // how long each frame lasts in ms
 #define TAP_FRAME_DURATION 66 // how long each frame lasts in ms
 #define ANIM_SIZE 636 // number of bytes in array, minimize for adequate firmware size, max is 1024
 #define IDLE_FRAMES 5
@@ -7,6 +7,8 @@
 #define KEYS_SIZE 100 // the number of keys stored in the array that tracks keypresses; how many keys are on the board?
 
 #define KEYPRESS_GRACE 50
+
+#define CYCLE_PER_TAP true
 
 #include "quantum.h"
 
@@ -460,10 +462,9 @@ void eval_anim_state(void)
             break;
 
         case Tap:
-            // TODO: only rotate frame if a key was pressed in the last say 50 ms, if not then return to Prep. we should not constatnly change frame but do that on a timer too
             if (!key_down_past_x) // Tap to Prep
             {
-                anim_state = Prep; // TODO: it seems like this code recovers to the prep path to fast. could be because the CPU is too fast?
+                anim_state = Prep;
                 idle_timeout_timer = timer_read32();
             }
             break;
@@ -495,7 +496,7 @@ static void draw_bongo(bool minimal)
                 oled_write_raw_P(idle_minimal[abs((IDLE_FRAMES - 1) - current_idle_frame)], ANIM_SIZE);
             else
                 oled_write_raw_P(idle[abs((IDLE_FRAMES - 1) - current_idle_frame)], ANIM_SIZE);
-            if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION)
+            if (timer_elapsed32(anim_timer) > IDLE_FRAME_DURATION)
             {
                 current_idle_frame = (current_idle_frame + 1) % IDLE_FRAMES;
                 anim_timer = timer_read32();
@@ -514,7 +515,12 @@ static void draw_bongo(bool minimal)
                 oled_write_raw_P(tap_minimal[abs((TAP_FRAMES - 1) - current_tap_frame)], ANIM_SIZE);
             else
                 oled_write_raw_P(tap[abs((TAP_FRAMES - 1) - current_tap_frame)], ANIM_SIZE);
-            if(timer_elapsed32(tap_anim_timer) > TAP_FRAME_DURATION) {
+            if(
+                timer_elapsed32(tap_anim_timer) > TAP_FRAME_DURATION
+#if CYCLE_PER_TAP == true
+                || key_down
+#endif
+            ) {
                 current_tap_frame = (current_tap_frame + 1) % TAP_FRAMES; // TODO: the tap frames also cycle way to fast. could also be a cpu skill
                 tap_anim_timer = timer_read32();
             }
