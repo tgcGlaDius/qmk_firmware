@@ -1,13 +1,13 @@
 #pragma once
 
-#include "config_common.h"
+//#include "config_common.h"
 
 /* USB Device descriptor parameter */
 #define VENDOR_ID       0x445A
 #define PRODUCT_ID      0x1221
-#define DEVICE_VER      0x0002
-#define MANUFACTURER    DZTECH
-#define PRODUCT         DZ60RGB_ANSI
+//#define DEVICE_VER      0x0002
+//#define MANUFACTURER    DZTECH
+//#define PRODUCT         DZ60RGB_ANSI
 
 /* key matrix size */
 #define MATRIX_ROWS 5
@@ -40,7 +40,7 @@
 #define LEADER_PER_KEY_TIMING
 #define LEADER_TIMEOUT 250
 
-#ifdef RGB_MATRIX_ENABLE
+/* #ifdef RGB_MATRIX_ENABLE
 #    define RGB_DISABLE_AFTER_TIMEOUT 0 // number of ticks to wait until disabling effects
 #    define RGB_DISABLE_WHEN_USB_SUSPENDED true // turn off effects when suspended
 #    define RGB_MATRIX_KEYPRESSES
@@ -65,5 +65,5 @@
 #    define DRIVER_COUNT 2
 #    define DRIVER_1_LED_TOTAL 61
 #    define DRIVER_LED_TOTAL DRIVER_1_LED_TOTAL
-#endif
+#endif */
 

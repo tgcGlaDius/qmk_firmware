@@ -9,7 +9,7 @@ MCU = atmega32u4
 #   QMK DFU      qmk-dfu
 #   ATmega32A    bootloadHID
 #   ATmega328P   USBasp
-BOOTLOADER = atmel-dfu
+#BOOTLOADER = atmel-dfu
 
 # Build Options
 #   change yes to no to disable
@@ -29,7 +29,7 @@ MIDI_ENABLE = no               # MIDI support
 BLUETOOTH_ENABLE = no          # Enable Bluetooth with the Adafruit EZ-Key HID
 AUDIO_ENABLE = no              # Audio output on port C6
 RGB_MATRIX_ENABLE = yes        # Use RGB matrix
-RGB_MATRIX_DRIVER = IS31FL3733
+#RGB_MATRIX_DRIVER = IS31FL3733
 NO_USB_STARTUP_CHECK = no      # Disable initialization only when usb is plugged in
 LEADER_ENABLE = yes
 
